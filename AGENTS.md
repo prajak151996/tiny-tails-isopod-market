@@ -28,3 +28,9 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Prices, fees and weather rules live in src/lib/catalog.ts and src/lib/shipping.ts and are recomputed on the server when an order is placed; why: never trust client totals.
+- Orders are stored in the Cloud `orders` table, reachable only through server functions in src/lib/orders.functions.ts; why: no customer data is readable from the browser.
+- Cart, currency, destination and this device's order numbers live in browser storage (src/lib/store.tsx); why: no sign-in, and orders themselves are stored in Cloud.
+- Species photos are asset pointers in src/assets/species/<slug>.jpg.asset.json, loaded by slug; why: one image per catalog entry without code changes.

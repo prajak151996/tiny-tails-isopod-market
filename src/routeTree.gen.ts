@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as LabelsRouteImport } from './routes/labels'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as TransitRouteImport } from './routes/transit'
+import { Route as CareSlugRouteImport } from './routes/care/$slug'
+import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as OrdersOrderNumberRouteImport } from './routes/orders.$orderNumber'
+import { Route as SpeciesSlugRouteImport } from './routes/species/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LabelsRoute = LabelsRouteImport.update({
+  id: '/labels',
+  path: '/labels',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransitRoute = TransitRouteImport.update({
+  id: '/transit',
+  path: '/transit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareSlugRoute = CareSlugRouteImport.update({
+  id: '/care/$slug',
+  path: '/care/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersIndexRoute = OrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersOrderNumberRoute = OrdersOrderNumberRouteImport.update({
+  id: '/orders/$orderNumber',
+  path: '/orders/$orderNumber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpeciesSlugRoute = SpeciesSlugRouteImport.update({
+  id: '/species/$slug',
+  path: '/species/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
+  '/labels': typeof LabelsRoute
+  '/profile': typeof ProfileRoute
+  '/transit': typeof TransitRoute
+  '/care/$slug': typeof CareSlugRoute
+  '/orders/$orderNumber': typeof OrdersOrderNumberRoute
+  '/species/$slug': typeof SpeciesSlugRoute
+  '/orders/': typeof OrdersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
+  '/labels': typeof LabelsRoute
+  '/profile': typeof ProfileRoute
+  '/transit': typeof TransitRoute
+  '/care/$slug': typeof CareSlugRoute
+  '/orders/$orderNumber': typeof OrdersOrderNumberRoute
+  '/species/$slug': typeof SpeciesSlugRoute
+  '/orders': typeof OrdersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/checkout': typeof CheckoutRoute
+  '/labels': typeof LabelsRoute
+  '/profile': typeof ProfileRoute
+  '/transit': typeof TransitRoute
+  '/care/$slug': typeof CareSlugRoute
+  '/orders/$orderNumber': typeof OrdersOrderNumberRoute
+  '/species/$slug': typeof SpeciesSlugRoute
+  '/orders/': typeof OrdersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/checkout'
+    | '/labels'
+    | '/profile'
+    | '/transit'
+    | '/care/$slug'
+    | '/orders/$orderNumber'
+    | '/species/$slug'
+    | '/orders/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/checkout'
+    | '/labels'
+    | '/profile'
+    | '/transit'
+    | '/care/$slug'
+    | '/orders/$orderNumber'
+    | '/species/$slug'
+    | '/orders'
+  id:
+    | '__root__'
+    | '/'
+    | '/checkout'
+    | '/labels'
+    | '/profile'
+    | '/transit'
+    | '/care/$slug'
+    | '/orders/$orderNumber'
+    | '/species/$slug'
+    | '/orders/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CheckoutRoute: typeof CheckoutRoute
+  LabelsRoute: typeof LabelsRoute
+  ProfileRoute: typeof ProfileRoute
+  TransitRoute: typeof TransitRoute
+  CareSlugRoute: typeof CareSlugRoute
+  OrdersOrderNumberRoute: typeof OrdersOrderNumberRoute
+  SpeciesSlugRoute: typeof SpeciesSlugRoute
+  OrdersIndexRoute: typeof OrdersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/labels': {
+      id: '/labels'
+      path: '/labels'
+      fullPath: '/labels'
+      preLoaderRoute: typeof LabelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transit': {
+      id: '/transit'
+      path: '/transit'
+      fullPath: '/transit'
+      preLoaderRoute: typeof TransitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/care/$slug': {
+      id: '/care/$slug'
+      path: '/care/$slug'
+      fullPath: '/care/$slug'
+      preLoaderRoute: typeof CareSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders/'
+      preLoaderRoute: typeof OrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/$orderNumber': {
+      id: '/orders/$orderNumber'
+      path: '/orders/$orderNumber'
+      fullPath: '/orders/$orderNumber'
+      preLoaderRoute: typeof OrdersOrderNumberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/species/$slug': {
+      id: '/species/$slug'
+      path: '/species/$slug'
+      fullPath: '/species/$slug'
+      preLoaderRoute: typeof SpeciesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CheckoutRoute: CheckoutRoute,
+  LabelsRoute: LabelsRoute,
+  ProfileRoute: ProfileRoute,
+  TransitRoute: TransitRoute,
+  CareSlugRoute: CareSlugRoute,
+  OrdersOrderNumberRoute: OrdersOrderNumberRoute,
+  SpeciesSlugRoute: SpeciesSlugRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
