@@ -76,7 +76,7 @@ export function LabelPreview({ type, data }: { type: LabelType; data: LabelData 
           {data.qrUrl && (
             <div className="shrink-0 text-center">
               <div className="rounded-xl border border-ink/20 bg-white p-2">
-                <QRCodeSVG value={data.qrUrl} size={72} fgColor="#111813" level="M" />
+                <QRCodeSVG value={data.qrUrl} size={72} fgColor="#181410" level="M" />
               </div>
               <div className="mt-1 text-[11px] font-semibold">Scan for Care Sheet</div>
             </div>
@@ -100,18 +100,18 @@ export function PrintLabel({ type, data }: { type: LabelType; data: LabelData })
   const box: CSSProperties = {
     width: `${w}mm`,
     height: `${h}mm`,
-    border: "0.3mm solid #111813",
+    border: "0.3mm solid #181410",
     borderRadius: "2mm",
     overflow: "hidden",
     background: "#fff",
-    color: "#111813",
+    color: "#181410",
     fontFamily: "Manrope, sans-serif",
     display: "flex",
     flexDirection: "column",
   };
   const header = (
-    <div style={{ background: "#111813", color: "#E7EFE8", padding: "1mm 2mm", fontSize: "2mm", fontWeight: 700, letterSpacing: "0.3mm", display: "flex", gap: "1.5mm", alignItems: "center" }}>
-      <span style={{ color: "#22C55E" }}>●</span>
+    <div style={{ background: "#181410", color: "#FFF7E8", padding: "1mm 2mm", fontSize: "2mm", fontWeight: 700, letterSpacing: "0.3mm", display: "flex", gap: "1.5mm", alignItems: "center" }}>
+      <span style={{ color: "#F97316" }}>●</span>
       {type === "box" ? "TINYTAILS EXOTICS • LIVE EXPORT • THAILAND" : "TINYTAILS ISOPODS • BANGKOK"}
     </div>
   );
@@ -152,9 +152,9 @@ export function PrintLabel({ type, data }: { type: LabelType; data: LabelData })
           {name(7)}
           {fam}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2mm", fontSize: "3.2mm", fontWeight: 800, textAlign: "center" }}>
-            <div style={{ background: "#111813", color: "#fff", padding: "2mm", borderRadius: "1.5mm" }}>LIVE INVERTEBRATES</div>
-            <div style={{ background: "#111813", color: "#fff", padding: "2mm", borderRadius: "1.5mm" }}>THIS SIDE UP ↑</div>
-            <div style={{ gridColumn: "span 2", border: "0.6mm solid #111813", padding: "2mm", borderRadius: "1.5mm" }}>
+            <div style={{ background: "#181410", color: "#fff", padding: "2mm", borderRadius: "1.5mm" }}>LIVE INVERTEBRATES</div>
+            <div style={{ background: "#181410", color: "#fff", padding: "2mm", borderRadius: "1.5mm" }}>THIS SIDE UP ↑</div>
+            <div style={{ gridColumn: "span 2", border: "0.6mm solid #181410", padding: "2mm", borderRadius: "1.5mm" }}>
               KEEP BETWEEN 10–30°C · DO NOT X-RAY
             </div>
           </div>

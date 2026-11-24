@@ -39,7 +39,7 @@ CUBARIS SP. "RED PAK CHONG" [FAMILY : ARMADILLIDAE]
 คุณเพิ่มสิ่งที่จำเป็นเองได้เลย และ สร้างได้เลย
 
 Locked:
-- Visual Direction: "Dark Vivarium" theme picked by the user. Deep peat-moss and charcoal dark background (#111813, #18221B), vibrant emerald and lime green accents (#22C55E), glowing rarity badges, high-contrast collector cards, macro photography aesthetic.
+- Visual Direction: "Dark Vivarium" theme picked by the user, updated to warm charcoal backgrounds with vibrant orange (#F97316) and yellow (#FACC15) accents, glowing rarity badges, high-contrast collector cards, macro photography aesthetic.
 - Brand Name: "TinyTails" (TinyTails Exotics • Thailand) with tagline "Captive-Bred Thai Isopods".
 - Catalog Data: All 32 isopod species and families provided by the user must be populated in the catalog:
   - Armadillidae (Cubaris Rubber Ducky, Panda King, White Shark, Cappuccino, Murina Orange, Murina Papaya, Orange Freezy, Firefly Holy Light, Murina Wild Type, Lemon Blue, Murina Glacier, Amber Ducky, Golden Powder, Dakmil, Happy Nun, Amber Panda, Penguin, Red Panda, Amber Firefly DCF, Red Pak Chong; Troglodillo sp. Soil)

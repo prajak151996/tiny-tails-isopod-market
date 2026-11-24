@@ -8,7 +8,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Dark Vivarium design system (TinyTails). Kit colors: peat, moss, bark, line, em, lime, mist, sage. */
+/* Dark Vivarium design system (TinyTails). Warm charcoal surfaces with orange/yellow accents. */
 @theme inline {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", ui-serif, Georgia, serif;
@@ -72,18 +72,18 @@
 :root {
   --radius: 1.25rem;
 
-  --peat: oklch(0.2 0.014 153.9);
-  --moss: oklch(0.24 0.02 154.2);
-  --bark: oklch(0.293 0.026 153.5);
-  --line: oklch(0.331 0.029 154.6);
-  --em: oklch(0.723 0.192 149.6);
-  --lime: oklch(0.849 0.207 128.8);
-  --mist: oklch(0.944 0.013 149.2);
-  --sage: oklch(0.695 0.031 153.1);
-  --lag: oklch(0.258 0.047 154.6);
-  --warn: oklch(0.804 0.146 75.3);
-  --paper: oklch(0.935 0.012 149.2);
-  --ink: oklch(0.2 0.014 153.9);
+  --peat: oklch(0.2 0.014 65);
+  --moss: oklch(0.24 0.018 65);
+  --bark: oklch(0.293 0.024 65);
+  --line: oklch(0.331 0.027 65);
+  --em: oklch(0.752 0.183 55.9);
+  --lime: oklch(0.852 0.185 88.5);
+  --mist: oklch(0.944 0.013 85);
+  --sage: oklch(0.695 0.025 75);
+  --lag: oklch(0.258 0.047 65);
+  --warn: oklch(0.72 0.17 35);
+  --paper: oklch(0.955 0.015 90);
+  --ink: oklch(0.2 0.014 65);
 
   --glow: 0 0 24px color-mix(in oklab, var(--em) 33%, transparent);
   --glow-soft: 0 0 16px color-mix(in oklab, var(--em) 33%, transparent);
