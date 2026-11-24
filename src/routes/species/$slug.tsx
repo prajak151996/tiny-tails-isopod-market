@@ -120,7 +120,7 @@ function SpeciesDetail() {
                   )}
                 >
                   {option.id === "colony" && (
-                    <span className="absolute -top-2.5 left-2 rounded-full bg-em px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-peat">
+                    <span className="absolute -top-2.5 left-2 rounded-full bg-em px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-on-em">
                       Most Popular
                     </span>
                   )}

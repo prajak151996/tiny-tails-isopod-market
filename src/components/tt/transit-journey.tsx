@@ -31,7 +31,7 @@ export function TransitJourney({
       <div className="relative h-36">
         <img src={jetPhoto.url} alt="Cargo jet leaving contrails across a blue sky" className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-moss/40 to-moss" />
-        <h2 className="font-display-italic absolute bottom-3 left-4 text-[22px] text-mist">Live Transit Journey</h2>
+        <h2 className="font-brand absolute bottom-3 left-4 text-[22px] text-mist">Live Transit Journey</h2>
       </div>
       <ol className="space-y-0 px-4 pt-2 pb-4">
         {steps.map((s, i) => {

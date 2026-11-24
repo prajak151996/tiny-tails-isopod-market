@@ -124,7 +124,7 @@ function Catalog() {
               >
                 <SlidersHorizontal className="size-[18px]" />
                 {activeFilters > 0 && (
-                  <span className="absolute -top-1 -right-1 grid size-5 place-items-center rounded-full bg-em text-[11px] font-bold text-peat">
+                  <span className="absolute -top-1 -right-1 grid size-5 place-items-center rounded-full bg-em text-[11px] font-bold text-on-em">
                     {activeFilters}
                   </span>
                 )}
@@ -173,7 +173,7 @@ function Catalog() {
                 onClick={() => setSearch({ family: f.id === "all" ? undefined : f.id })}
                 className={cn(
                   "h-9 shrink-0 rounded-full px-4 text-[13px] font-semibold whitespace-nowrap transition-colors",
-                  active ? "bg-em text-peat" : "border border-line bg-moss text-mist hover:border-em/60",
+                  active ? "bg-em text-on-em" : "border border-line bg-moss text-mist hover:border-em/60",
                 )}
               >
                 {f.label} ({familyCount(SPECIES, f.id)})
@@ -182,7 +182,7 @@ function Catalog() {
           })}
         </div>
 
-        <Link to="/transit" className="flex items-center gap-4 rounded-[24px] bg-em p-4 text-peat shadow-glow-faint">
+        <Link to="/transit" className="flex items-center gap-4 rounded-[24px] bg-sunset p-4 text-on-em shadow-glow-faint">
           <span className="grid size-12 shrink-0 place-items-center rounded-full bg-peat/10">
             <PlaneIcon />
           </span>
@@ -275,7 +275,7 @@ function FilterGroup({
               onClick={() => onToggle(o.id)}
               className={cn(
                 "h-9 rounded-full px-4 text-[13px] font-semibold",
-                on ? "bg-em text-peat" : "border border-line bg-peat text-mist",
+                on ? "bg-em text-on-em" : "border border-line bg-peat text-mist",
               )}
             >
               {o.label}

@@ -21,7 +21,7 @@ const TABS = [
 export function Brand({ className }: { className?: string }) {
   return (
     <Link to="/" className={cn("flex shrink-0 flex-col justify-center leading-tight", className)}>
-      <span className="font-display-italic text-[16px] text-mist">TinyTails</span>
+      <span className="font-brand text-[16px] text-mist">TinyTails</span>
       <span className="text-[10px] font-semibold tracking-wide text-sage">Exotic Isopods • Thailand</span>
     </Link>
   );
@@ -37,7 +37,7 @@ function CartButton() {
     >
       <BagIcon />
       {hydrated && cartCount > 0 && (
-        <span className="absolute -top-1 -right-1 grid size-5 place-items-center rounded-full bg-em text-[11px] font-bold text-peat">
+        <span className="absolute -top-1 -right-1 grid size-5 place-items-center rounded-full bg-em text-[11px] font-bold text-on-em">
           {cartCount > 9 ? "9+" : cartCount}
         </span>
       )}
@@ -79,7 +79,7 @@ export function AppHeader({
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-3 px-4 md:px-6">
         {back && <BackButton fallback={back} />}
         {brand && <Brand />}
-        <h1 className="font-display-italic min-w-0 flex-1 truncate text-[17px] text-mist">{title}</h1>
+        <h1 className="font-brand min-w-0 flex-1 truncate text-[17px] text-mist">{title}</h1>
         <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
           {TABS.map((t) => (
             <Link

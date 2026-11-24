@@ -8,10 +8,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Dark Vivarium design system (TinyTails). Warm charcoal surfaces with orange/yellow accents. */
+/* TinyTails "Sunny Burrow" design system: cream surfaces, orange + yellow from the shop logo, rounded type. */
 @theme inline {
-  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Nunito", "Prompt", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", "Mali", ui-rounded, ui-sans-serif, system-ui, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -26,6 +26,8 @@
   --color-bark: var(--bark);
   --color-line: var(--line);
   --color-em: var(--em);
+  --color-on-em: var(--on-em);
+  --color-sun: var(--sun);
   --color-lime: var(--lime);
   --color-mist: var(--mist);
   --color-sage: var(--sage);
@@ -62,7 +64,7 @@
   --color-sidebar: var(--moss);
   --color-sidebar-foreground: var(--mist);
   --color-sidebar-primary: var(--em);
-  --color-sidebar-primary-foreground: var(--peat);
+  --color-sidebar-primary-foreground: var(--on-em);
   --color-sidebar-accent: var(--bark);
   --color-sidebar-accent-foreground: var(--mist);
   --color-sidebar-border: var(--line);
@@ -72,22 +74,25 @@
 :root {
   --radius: 1.25rem;
 
-  --peat: oklch(0.2 0.014 65);
-  --moss: oklch(0.24 0.018 65);
-  --bark: oklch(0.293 0.024 65);
-  --line: oklch(0.331 0.027 65);
-  --em: oklch(0.752 0.183 55.9);
-  --lime: oklch(0.852 0.185 88.5);
-  --mist: oklch(0.944 0.013 85);
-  --sage: oklch(0.695 0.025 75);
-  --lag: oklch(0.258 0.047 65);
-  --warn: oklch(0.72 0.17 35);
-  --paper: oklch(0.955 0.015 90);
+  /* Token names are semantic: peat = page, moss = card, bark = soft fill, mist = text, sage = muted text. */
+  --peat: oklch(0.977 0.02 84);
+  --moss: oklch(0.996 0.007 85);
+  --bark: oklch(0.948 0.045 80);
+  --line: oklch(0.9 0.05 72);
+  --em: oklch(0.72 0.18 52);
+  --on-em: oklch(0.27 0.05 45);
+  --sun: oklch(0.88 0.16 92);
+  --lime: oklch(0.58 0.13 68);
+  --mist: oklch(0.3 0.045 48);
+  --sage: oklch(0.52 0.045 55);
+  --lag: oklch(0.965 0.06 95);
+  --warn: oklch(0.58 0.19 33);
+  --paper: oklch(0.985 0.012 90);
   --ink: oklch(0.2 0.014 65);
 
-  --glow: 0 0 24px color-mix(in oklab, var(--em) 33%, transparent);
-  --glow-soft: 0 0 16px color-mix(in oklab, var(--em) 33%, transparent);
-  --glow-faint: 0 0 24px color-mix(in oklab, var(--em) 20%, transparent);
+  --glow: 0 8px 22px -8px color-mix(in oklab, var(--em) 70%, transparent);
+  --glow-soft: 0 4px 14px -6px color-mix(in oklab, var(--em) 55%, transparent);
+  --glow-faint: 0 10px 28px -12px color-mix(in oklab, var(--em) 60%, transparent);
 
   --background: var(--peat);
   --foreground: var(--mist);
@@ -96,15 +101,15 @@
   --popover: var(--moss);
   --popover-foreground: var(--mist);
   --primary: var(--em);
-  --primary-foreground: var(--peat);
+  --primary-foreground: var(--on-em);
   --secondary: var(--bark);
   --secondary-foreground: var(--mist);
   --muted: var(--bark);
   --muted-foreground: var(--sage);
   --accent: var(--bark);
   --accent-foreground: var(--mist);
-  --destructive: oklch(0.711 0.166 22.2);
-  --destructive-foreground: var(--peat);
+  --destructive: oklch(0.58 0.2 25);
+  --destructive-foreground: var(--moss);
   --border: var(--line);
   --input: var(--line);
   --ring: var(--em);
@@ -119,9 +124,20 @@
 @utility shadow-glow-faint {
   box-shadow: var(--glow-faint);
 }
-@utility font-display-italic {
+@utility font-brand {
   font-family: var(--font-display);
-  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+/* Orange-to-yellow banner used for flight and order highlights. */
+@utility bg-sunset {
+  background-image: linear-gradient(120deg, var(--em), var(--sun));
+}
+/* Soft polka-dot page background. */
+@utility bg-dots {
+  background-color: var(--peat);
+  background-image: radial-gradient(color-mix(in oklab, var(--em) 13%, transparent) 1.2px, transparent 1.6px);
+  background-size: 22px 22px;
 }
 @utility no-scrollbar {
   scrollbar-width: none;
@@ -136,7 +152,7 @@
   }
 
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   body {

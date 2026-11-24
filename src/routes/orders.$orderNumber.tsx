@@ -105,7 +105,7 @@ function OrderPage() {
       <Page className="space-y-4 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-6 lg:space-y-0">
         <div className="space-y-4">
           {placed && (
-            <div className="flex items-start gap-3 rounded-[24px] bg-em p-4 text-peat shadow-glow-faint">
+            <div className="flex items-start gap-3 rounded-[24px] bg-sunset p-4 text-on-em shadow-glow-faint">
               <CheckCircle2 className="mt-0.5 size-6 shrink-0" />
               <div>
                 <div className="font-display text-[19px] leading-tight">You're on the {shortDate(o.flightDate)} flight</div>

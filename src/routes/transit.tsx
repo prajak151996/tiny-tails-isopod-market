@@ -63,7 +63,7 @@ function Transit() {
       <AppHeader title="Export Flights" brand />
       <Page className="space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
         <div className="space-y-4">
-          <section className="space-y-4 rounded-[24px] bg-em p-5 text-peat shadow-glow-faint">
+          <section className="space-y-4 rounded-[24px] bg-sunset p-5 text-on-em shadow-glow-faint">
             <div className="flex items-center gap-3">
               <span className="grid size-12 shrink-0 place-items-center rounded-full bg-peat/10">
                 <PlaneIcon />
@@ -141,7 +141,7 @@ function Transit() {
                 type="submit"
                 aria-label="Track"
                 disabled={!codeOk || lookup.isPending}
-                className="grid size-11 shrink-0 place-items-center rounded-full bg-em text-peat shadow-glow disabled:opacity-50"
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-em text-on-em shadow-glow disabled:opacity-50"
               >
                 {lookup.isPending ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
               </button>

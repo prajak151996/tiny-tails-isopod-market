@@ -274,7 +274,7 @@ function Checkout() {
               aria-hidden="true"
               className={cn(
                 "mt-0.5 grid size-6 shrink-0 place-items-center rounded-md border-2 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-em/40",
-                agreed ? "border-em bg-em text-peat" : "border-line bg-peat",
+                agreed ? "border-em bg-em text-on-em" : "border-line bg-peat",
               )}
             >
               {agreed && <Check className="size-4" strokeWidth={3} />}

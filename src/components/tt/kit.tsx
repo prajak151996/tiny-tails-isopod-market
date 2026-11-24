@@ -5,7 +5,7 @@ import { useStore } from "@/lib/store";
 import { formatMoney } from "@/lib/shipping";
 
 export const btnPrimary =
-  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-em px-5 text-[14px] font-bold text-peat shadow-glow transition-[filter,opacity] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none";
+  "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-em px-5 text-[14px] font-bold text-on-em shadow-glow transition-[filter,opacity] hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none";
 export const btnSecondary =
   "inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-line bg-moss px-5 text-[14px] font-semibold text-mist transition-colors hover:border-em/60 disabled:opacity-50";
 export const inputBox =

@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import type { PackId } from "./catalog";
 import type { CountryCode, Currency, LineItem } from "./shipping";
 
+export type Lang = "en" | "th";
+
 export interface Destination {
   country: CountryCode;
   zip: string;
@@ -10,6 +12,7 @@ export interface Destination {
 interface StoreState {
   cart: LineItem[];
   currency: Currency;
+  lang: Lang;
   destination: Destination;
   orderNumbers: string[];
 }
@@ -22,6 +25,7 @@ interface StoreApi extends StoreState {
   setQty: (slug: string, pack: PackId, qty: number) => void;
   clearCart: () => void;
   setCurrency: (c: Currency) => void;
+  setLang: (l: Lang) => void;
   setDestination: (d: Partial<Destination>) => void;
   rememberOrder: (orderNumber: string) => void;
 }
@@ -30,6 +34,7 @@ const KEY = "tinytails:v1";
 const DEFAULTS: StoreState = {
   cart: [],
   currency: "USD",
+  lang: "en",
   destination: { country: "US", zip: "90210" },
   orderNumbers: [],
 };
@@ -58,6 +63,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       // storage full or blocked
     }
   }, [state, hydrated]);
+
+  useEffect(() => {
+    document.documentElement.lang = state.lang;
+  }, [state.lang]);
 
   const addToCart = useCallback((slug: string, pack: PackId) => {
     setState((s) => {
@@ -93,6 +102,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       setQty,
       clearCart: () => setState((s) => ({ ...s, cart: [] })),
       setCurrency: (currency) => setState((s) => ({ ...s, currency })),
+      setLang: (lang) => setState((s) => ({ ...s, lang })),
       setDestination: (d) => setState((s) => ({ ...s, destination: { ...s.destination, ...d } })),
       rememberOrder: (n) =>
         setState((s) => ({ ...s, orderNumbers: [n, ...s.orderNumbers.filter((x) => x !== n)].slice(0, 50) })),

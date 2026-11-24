@@ -26,7 +26,7 @@ export function PolicyDialog({ children }: { children: ReactNode }) {
         <ol className="space-y-3">
           {STEPS.map((s, i) => (
             <li key={s} className="flex gap-3 text-[14px]">
-              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-em text-[12px] font-bold text-peat">{i + 1}</span>
+              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-em text-[12px] font-bold text-on-em">{i + 1}</span>
               <span>{s}</span>
             </li>
           ))}

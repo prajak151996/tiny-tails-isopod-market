@@ -34,7 +34,7 @@ function Profile() {
             <IsopodMark className="size-7" />
           </span>
           <div>
-            <div className="font-display-italic text-[22px]">TinyTails Exotics</div>
+            <div className="font-brand text-[22px]">TinyTails Exotics</div>
             <div className="text-[13px] text-sage">Captive-Bred Thai Isopods · Bangkok, Thailand</div>
           </div>
         </Card>
@@ -51,7 +51,7 @@ function Profile() {
                 onClick={() => setCurrency(c)}
                 className={cn(
                   "h-11 rounded-full text-[14px] font-bold transition-colors",
-                  currency === c ? "bg-em text-peat" : "border border-line bg-peat text-mist hover:border-em/60",
+                  currency === c ? "bg-em text-on-em" : "border border-line bg-peat text-mist hover:border-em/60",
                 )}
               >
                 {c}

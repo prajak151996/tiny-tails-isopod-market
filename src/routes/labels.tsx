@@ -136,7 +136,7 @@ function LabelStudio() {
                 onClick={() => set({ type: t.id })}
                 className={cn(
                   "h-11 shrink-0 rounded-full px-4 text-[14px] font-semibold whitespace-nowrap",
-                  type === t.id ? "bg-em text-peat" : "border border-line bg-moss text-mist hover:border-em/60",
+                  type === t.id ? "bg-em text-on-em" : "border border-line bg-moss text-mist hover:border-em/60",
                 )}
               >
                 {t.label}
