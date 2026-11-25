@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import { shortDate, type Country } from "@/lib/shipping";
+import type { Country } from "@/lib/shipping";
+import { hubL, shortDateL, useI18n } from "@/lib/i18n";
 import jetPhoto from "@/assets/cargo_jet_sky.jpg.asset.json";
 
 export function TransitJourney({
@@ -20,18 +21,24 @@ export function TransitJourney({
   stage: 0 | 1 | 2;
   hold?: boolean;
 }) {
+  const { lang, t } = useI18n();
   const where = [city, zip].filter(Boolean).join(" ");
   const steps = [
-    { title: "Bangkok Facility", body: hold ? "Packed and held until your forecast is in the safe range" : "Packaged in organic moss & breathable container" },
-    { title: `Cargo Flight · ${shortDate(flightDate)}`, body: `Departs to ${country.hub}` },
-    { title: `Domestic Express · ${shortDate(deliveryDate, true)}`, body: `FedEx Priority Overnight to ${where}` },
+    {
+      title: t("Bangkok Facility", "ฟาร์มที่กรุงเทพฯ"),
+      body: hold
+        ? t("Packed and held until your forecast is in the safe range", "แพ็กแล้วและพักไว้จนอากาศปลายทางอยู่ในช่วงปลอดภัย")
+        : t("Packaged in organic moss & breathable container", "แพ็กในมอสออร์แกนิกและกล่องระบายอากาศ"),
+    },
+    { title: `${t("Cargo Flight", "เที่ยวบินขนส่ง")} · ${shortDateL(flightDate, lang)}`, body: t(`Departs to ${country.hub}`, `บินไปยัง${hubL(country, lang)}`) },
+    { title: `${t("Domestic Express", "ส่งด่วนในประเทศ")} · ${shortDateL(deliveryDate, lang, true)}`, body: t(`FedEx Priority Overnight to ${where}`, `FedEx Priority Overnight ถึง ${where}`) },
   ];
   return (
     <section className="overflow-hidden rounded-[24px] border border-line bg-moss">
       <div className="relative h-36">
-        <img src={jetPhoto.url} alt="Cargo jet leaving contrails across a blue sky" className="absolute inset-0 size-full object-cover" />
+        <img src={jetPhoto.url} alt={t("Cargo jet leaving contrails across a blue sky", "เครื่องบินขนส่งบนท้องฟ้าสีฟ้า")} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-linear-to-b from-transparent via-moss/40 to-moss" />
-        <h2 className="font-brand absolute bottom-3 left-4 text-[22px] text-mist">Live Transit Journey</h2>
+        <h2 className="font-brand absolute bottom-3 left-4 text-[22px] text-mist">{t("Live Transit Journey", "เส้นทางขนส่งสด")}</h2>
       </div>
       <ol className="space-y-0 px-4 pt-2 pb-4">
         {steps.map((s, i) => {

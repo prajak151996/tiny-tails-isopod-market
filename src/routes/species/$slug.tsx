@@ -7,10 +7,10 @@ import {
   getSpecies,
   packPrice,
   PACKS,
-  rarityHeadline,
   type PackId,
 } from "@/lib/catalog";
-import { domesticLabel, isValidZip, orderWithinText, quote, shortDate } from "@/lib/shipping";
+import { isValidZip, quote } from "@/lib/shipping";
+import { blurbL, domesticLabelL, orderWithinTextL, packLabelL, rarityHeadlineL, shortDateL, useI18n, zipLabelL } from "@/lib/i18n";
 import { useNow, useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { AppHeader, DockBar, Page, Screen } from "@/components/tt/shell";
@@ -47,15 +47,16 @@ export const Route = createFileRoute("/species/$slug")({
 });
 
 function SpeciesNotFound() {
+  const { t } = useI18n();
   return (
     <Screen>
-      <AppHeader title="Species not found" back="/" />
+      <AppHeader title={t("Species not found", "ไม่พบสายพันธุ์")} back="/" />
       <Page>
         <Card className="space-y-3 text-center">
-          <SectionTitle>This morph isn't in our catalog</SectionTitle>
-          <p className="text-[13px] text-sage">It may have sold out or the link is mistyped.</p>
+          <SectionTitle>{t("This morph isn't in our catalog", "ไม่มีมอร์ฟนี้ในรายการของเรา")}</SectionTitle>
+          <p className="text-[13px] text-sage">{t("It may have sold out or the link is mistyped.", "อาจขายหมดแล้ว หรือลิงก์พิมพ์ผิด")}</p>
           <Link to="/" className={btnPrimary}>
-            Browse all species
+            {t("Browse all species", "ดูสายพันธุ์ทั้งหมด")}
           </Link>
         </Card>
       </Page>
@@ -70,6 +71,7 @@ function SpeciesDetail() {
   const { destination, currency, addToCart } = useStore();
   const navigate = useNavigate();
   const money = useMoney();
+  const { lang, t } = useI18n();
   const now = useNow();
 
   const q = quote([{ slug, pack, qty: 1 }], destination.country, destination.zip, now);
@@ -91,20 +93,20 @@ function SpeciesDetail() {
             alt={catalogName(species)}
             className="aspect-[4/3.4] rounded-[24px] outline-1 -outline-offset-1 outline-mist/5"
           />
-          <Chip className="absolute bottom-3 left-3">Captive Bred {species.generation} • Thailand</Chip>
+          <Chip className="absolute bottom-3 left-3">{t(`Captive Bred ${species.generation} • Thailand`, `เพาะพันธุ์ในฟาร์ม ${species.generation} • ประเทศไทย`)}</Chip>
         </div>
 
         <div className="mt-4 space-y-4 lg:mt-0">
           <div className="flex items-center justify-between gap-3">
-            <Badge>{rarityHeadline(species)}</Badge>
+            <Badge>{rarityHeadlineL(species, lang)}</Badge>
             <span className="text-right text-[13px] text-sage">
-              <b className="text-mist">★ {species.rating.toFixed(1)}</b> ({species.reviews} verified export reviews)
+              <b className="text-mist">★ {species.rating.toFixed(1)}</b> ({t(`${species.reviews} verified export reviews`, `${species.reviews} รีวิวจากผู้ซื้อต่างประเทศ`)})
             </span>
           </div>
 
-          <p className="text-[14px] text-sage">{species.blurb}</p>
+          <p className="text-[14px] text-sage">{blurbL(species, lang)}</p>
 
-          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Colony size">
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={t("Colony size", "ขนาดโคโลนี")}>
             {PACKS.map((option) => {
               const active = option.id === pack;
               return (
@@ -121,10 +123,10 @@ function SpeciesDetail() {
                 >
                   {option.id === "colony" && (
                     <span className="absolute -top-2.5 left-2 rounded-full bg-em px-2 py-0.5 text-[10px] font-bold whitespace-nowrap text-on-em">
-                      Most Popular
+                      {t("Most Popular", "ยอดนิยม")}
                     </span>
                   )}
-                  <div className={cn("text-[12px]", active ? "text-em" : "text-sage")}>{option.label}</div>
+                  <div className={cn("text-[12px]", active ? "text-em" : "text-sage")}>{packLabelL(option.id, lang)}</div>
                   <div className="mt-1 text-[20px] font-bold">{option.count}x</div>
                   <div className={cn("text-[14px]", active ? "text-mist" : "text-sage")}>
                     {money(packPrice(species, option.id), { whole: true })}
@@ -137,34 +139,34 @@ function SpeciesDetail() {
           <div className="flex items-center gap-3 rounded-[20px] border border-em/30 bg-lag p-4">
             <ShieldIcon className="shrink-0 text-em" />
             <div>
-              <div className="text-[14px] font-semibold">100% Live Arrival Guarantee (LAG)</div>
+              <div className="text-[14px] font-semibold">{t("100% Live Arrival Guarantee (LAG)", "รับประกันถึงมือแบบมีชีวิต 100% (LAG)")}</div>
               <PolicyDialog>
                 <button type="button" className="text-[13px] text-em underline underline-offset-2">
-                  View 2h Unboxing Policy
+                  {t("View 2h Unboxing Policy", "ดูนโยบายวิดีโอแกะกล่อง 2 ชม.")}
                 </button>
               </PolicyDialog>
             </div>
           </div>
 
           <Card className="space-y-3">
-            <SectionTitle>Door-to-Door Landed Cost</SectionTitle>
+            <SectionTitle>{t("Door-to-Door Landed Cost", "ค่าใช้จ่ายรวมถึงหน้าบ้าน")}</SectionTitle>
             <DestinationFields />
             {zipOk ? (
               <WeatherStatusLine status={q.status} tempC={q.tempC} />
             ) : (
               <p className="rounded-xl bg-warn/10 px-3 py-2 text-[12px] text-warn">
-                Enter a valid {q.country.zipLabel.toLowerCase()} to check the destination forecast.
+                {t(`Enter a valid ${q.country.zipLabel.toLowerCase()} to check the destination forecast.`, `กรอก${zipLabelL(q.country, lang)}ให้ถูกต้องเพื่อเช็กสภาพอากาศปลายทาง`)}
               </p>
             )}
             <Ledger
               rows={[
-                [`${p.label} (${p.count}x)`, money(q.itemsUsd)],
-                ["Bangkok Air Cargo & Transshipper Fee", money(q.airFreightUsd)],
-                [domesticLabel(q.country), money(q.domesticUsd)],
+                [`${packLabelL(p.id, lang)} (${p.count}x)`, money(q.itemsUsd)],
+                [t("Bangkok Air Cargo & Transshipper Fee", "ค่าขนส่งทางอากาศจากกรุงเทพฯ และค่าตัวแทนรับ-ส่ง"), money(q.airFreightUsd)],
+                [domesticLabelL(q.country, lang), money(q.domesticUsd)],
               ]}
-              total={["Total Estimated Landed Cost", money(q.totalUsd)]}
+              total={[t("Total Estimated Landed Cost", "ประมาณการรวมถึงหน้าบ้าน"), money(q.totalUsd)]}
             />
-            <p className="text-[11px] text-sage">Excludes any import duty or VAT your country may charge on arrival.</p>
+            <p className="text-[11px] text-sage">{t("Excludes any import duty or VAT your country may charge on arrival.", "ไม่รวมภาษีนำเข้าหรือ VAT ที่ประเทศปลายทางอาจเรียกเก็บ")}</p>
           </Card>
 
           <Link
@@ -173,8 +175,8 @@ function SpeciesDetail() {
           >
             <PlaneIcon className="shrink-0 text-lime" />
             <p className="text-[13px]">
-              Next Export Flight departs Bangkok <b className="text-lime">{shortDate(q.flight.date)}</b>{" "}
-              <span className="text-sage">({orderWithinText(q.flight, now)})</span>
+              {t("Next Export Flight departs Bangkok", "เที่ยวบินส่งออกรอบถัดไปออกจากกรุงเทพฯ")} <b className="text-lime">{shortDateL(q.flight.date, lang)}</b>{" "}
+              <span className="text-sage">({orderWithinTextL(q.flight, now, lang)})</span>
             </p>
           </Link>
         </div>
@@ -187,7 +189,7 @@ function SpeciesDetail() {
             <div className="text-[11px] text-sage">{currency}</div>
           </div>
           <button type="button" onClick={preOrder} className={cn(btnPrimary, "flex-1")}>
-            Pre-Order for {shortDate(q.flight.date)} Flight
+            {t(`Pre-Order for ${shortDateL(q.flight.date, lang)} Flight`, `สั่งจองเที่ยวบิน ${shortDateL(q.flight.date, lang)}`)}
           </button>
         </div>
       </DockBar>

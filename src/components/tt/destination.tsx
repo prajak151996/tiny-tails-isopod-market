@@ -3,10 +3,12 @@ import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { COUNTRIES, getCountry, isValidZip, type CountryCode, type WeatherStatus } from "@/lib/shipping";
 import { ChevronDown } from "./icons";
+import { countryNameL, useI18n, zipLabelL, type Lang } from "@/lib/i18n";
 
 /** Country select + ZIP field bound to the saved destination. */
 export function DestinationFields({ className }: { className?: string }) {
   const { destination, setDestination } = useStore();
+  const { lang, t } = useI18n();
   const country = getCountry(destination.country);
   const [zip, setZip] = useState(destination.zip);
 
@@ -16,11 +18,11 @@ export function DestinationFields({ className }: { className?: string }) {
     <div className={cn("flex gap-2", className)}>
       <label className="relative flex h-11 min-w-0 flex-1 items-center rounded-xl border border-line bg-peat px-3 text-[13px] focus-within:border-em/70">
         <span className="pointer-events-none truncate">
-          <span className="text-sage">Destination:</span> {country.name}
+          <span className="text-sage">{t("Destination:", "ปลายทาง:")}</span> {countryNameL(country, lang)}
         </span>
         <ChevronDown className="pointer-events-none ml-auto shrink-0" />
         <select
-          aria-label="Destination country"
+          aria-label={t("Destination country", "ประเทศปลายทาง")}
           value={destination.country}
           onChange={(e) => {
             const next = getCountry(e.target.value);
@@ -30,13 +32,13 @@ export function DestinationFields({ className }: { className?: string }) {
         >
           {COUNTRIES.map((c) => (
             <option key={c.code} value={c.code}>
-              {c.name}
+              {countryNameL(c, lang)}
             </option>
           ))}
         </select>
       </label>
       <input
-        aria-label={country.zipLabel}
+        aria-label={zipLabelL(country, lang)}
         value={zip}
         placeholder={country.zipPlaceholder}
         maxLength={10}
@@ -60,13 +62,18 @@ export function useZipDraftValid(): boolean {
   return isValidZip(destination.country, destination.zip);
 }
 
-export function weatherText(status: WeatherStatus, tempC: number): string {
+export function weatherText(status: WeatherStatus, tempC: number, lang: Lang = "en"): string {
+  if (lang === "th") {
+    if (status === "safe") return `สถานะ: ปลอดภัย (${tempC}°C - พร้อมส่ง FedEx Priority Overnight)`;
+    return `สถานะ: พักส่งเพราะสภาพอากาศ (${tempC}°C - ${status === "cold" ? "หนาว" : "ร้อน"}เกินไป จะส่งในเที่ยวบินถัดไปที่ปลอดภัย)`;
+  }
   if (status === "safe") return `Status: Safe (${tempC}°C - FedEx Priority Overnight Ready)`;
   return `Status: Weather Hold (${tempC}°C - too ${status}, ships on the next safe flight)`;
 }
 
 export function WeatherStatusLine({ status, tempC }: { status: WeatherStatus; tempC: number }) {
   const safe = status === "safe";
+  const { lang } = useI18n();
   return (
     <div
       role="status"
@@ -81,7 +88,7 @@ export function WeatherStatusLine({ status, tempC }: { status: WeatherStatus; te
           safe ? "bg-em shadow-[0_0_8px_var(--em)]" : "bg-warn shadow-[0_0_8px_var(--warn)]",
         )}
       />
-      {weatherText(status, tempC)}
+      {weatherText(status, tempC, lang)}
     </div>
   );
 }

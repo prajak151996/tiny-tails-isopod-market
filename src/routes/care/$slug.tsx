@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { catalogName, displayName, familyTag, getSpecies, originLine, DIFFICULTY_LABEL } from "@/lib/catalog";
+import { catalogName, displayName, familyTag, getSpecies } from "@/lib/catalog";
+import { blurbL, careL, difficultyLabelL, originLineL, useI18n } from "@/lib/i18n";
 import { AppHeader, Page, Screen } from "@/components/tt/shell";
 import { btnPrimary, Card, Ledger, SectionTitle, SpeciesPhoto } from "@/components/tt/kit";
 
@@ -23,53 +24,65 @@ export const Route = createFileRoute("/care/$slug")({
       ],
     };
   },
-  notFoundComponent: () => (
+  notFoundComponent: CareNotFound,
+  errorComponent: CareError,
+  component: CareSheet,
+});
+
+function CareNotFound() {
+  const { t } = useI18n();
+  return (
     <Screen>
-      <AppHeader title="Care sheet" back="/" />
+      <AppHeader title={t("Care sheet", "วิธีเลี้ยง")} back="/" />
       <Page>
         <Card className="space-y-3 text-center">
-          <SectionTitle>Care sheet not found</SectionTitle>
-          <Link to="/" className={btnPrimary}>Browse species</Link>
+          <SectionTitle>{t("Care sheet not found", "ไม่พบวิธีเลี้ยง")}</SectionTitle>
+          <Link to="/" className={btnPrimary}>{t("Browse species", "ดูสายพันธุ์")}</Link>
         </Card>
       </Page>
     </Screen>
-  ),
-  errorComponent: () => (
+  );
+}
+
+function CareError() {
+  const { t } = useI18n();
+  return (
     <Screen>
-      <AppHeader title="Care sheet" back="/" />
-      <Page><Card>This care sheet didn't load. Please try again.</Card></Page>
+      <AppHeader title={t("Care sheet", "วิธีเลี้ยง")} back="/" />
+      <Page><Card>{t("This care sheet didn't load. Please try again.", "โหลดวิธีเลี้ยงไม่สำเร็จ กรุณาลองใหม่")}</Card></Page>
     </Screen>
-  ),
-  component: CareSheet,
-});
+  );
+}
 
 function CareSheet() {
   const { slug } = Route.useLoaderData();
   const s = getSpecies(slug)!;
+  const { lang, t } = useI18n();
+  const care = careL(s.care, lang);
   return (
     <Screen>
-      <AppHeader title="Care Sheet" back="/" brand />
+      <AppHeader title={t("Care Sheet", "วิธีเลี้ยง")} back="/" brand />
       <Page className="mx-auto max-w-2xl space-y-4">
         <SpeciesPhoto slug={s.slug} alt={catalogName(s)} className="aspect-[4/3] rounded-[24px]" />
         <div>
           <h2 className="text-[17px] font-bold">{catalogName(s)}</h2>
           <p className="text-[12px] text-sage">{familyTag(s)}</p>
         </div>
-        <p className="text-[14px] text-sage">{s.blurb}</p>
+        <p className="text-[14px] text-sage">{blurbL(s, lang)}</p>
         <Card>
           <Ledger
             rows={[
-              ["Humidity", `${s.care.humidity} · ${s.care.humidityNote}`],
-              ["Temperature", s.care.temp],
-              ["Diet", s.care.diet],
-              ["Care level", DIFFICULTY_LABEL[s.difficulty]],
+              [t("Humidity", "ความชื้น"), `${care.humidity} · ${care.humidityNote}`],
+              [t("Temperature", "อุณหภูมิ"), care.temp],
+              [t("Diet", "อาหาร"), care.diet],
+              [t("Care level", "ระดับการเลี้ยง"), difficultyLabelL(s.difficulty, lang)],
             ]}
-            total={["Origin", originLine(s)]}
+            total={[t("Origin", "แหล่งที่มา"), originLineL(s, lang)]}
           />
-          <p className="mt-3 text-[13px] text-sage">{s.care.substrate}</p>
+          <p className="mt-3 text-[13px] text-sage">{care.substrate}</p>
         </Card>
         <Link to="/species/$slug" params={{ slug: s.slug }} className={btnPrimary}>
-          Shop this species
+          {t("Shop this species", "ซื้อสายพันธุ์นี้")}
         </Link>
       </Page>
     </Screen>

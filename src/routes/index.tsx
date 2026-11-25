@@ -3,18 +3,17 @@ import { ChevronRight, QrCode, Search, SearchX, SlidersHorizontal } from "lucide
 import { useMemo, useState } from "react";
 import {
   catalogName,
-  DIFFICULTY_LABEL,
   FAMILY_FILTERS,
   familyCount,
   familyTag,
   filterSpecies,
-  RARITY_LABEL,
   SPECIES,
   type Difficulty,
   type FamilyFilter,
   type Rarity,
 } from "@/lib/catalog";
-import { nextFlight, shortDate } from "@/lib/shipping";
+import { nextFlight } from "@/lib/shipping";
+import { badgeL, difficultyLabelL, familyFilterLabelL, rarityLabelL, shortDateL, useI18n } from "@/lib/i18n";
 import { useNow } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { AppHeader, Page, Screen, TabBar } from "@/components/tt/shell";
@@ -65,6 +64,7 @@ function Catalog() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const money = useMoney();
+  const { lang, t } = useI18n();
   const now = useNow();
   const flight = nextFlight(now);
 
@@ -98,7 +98,7 @@ function Catalog() {
 
   return (
     <Screen>
-      <AppHeader title="Species Catalog" brand />
+      <AppHeader title={t("Species Catalog", "รายชื่อสายพันธุ์")} brand />
       <Page className="space-y-4">
         <div className="flex gap-2">
           <label className="flex h-11 flex-1 items-center gap-2 rounded-2xl border border-line px-3 focus-within:border-em/70">
@@ -110,8 +110,8 @@ function Catalog() {
                 setQ(e.target.value);
                 setSearch({ q: e.target.value || undefined });
               }}
-              placeholder={`Search ${SPECIES.length} species...`}
-              aria-label="Search species"
+              placeholder={t(`Search ${SPECIES.length} species...`, `ค้นหา ${SPECIES.length} สายพันธุ์...`)}
+              aria-label={t("Search species", "ค้นหาสายพันธุ์")}
               className="h-full min-w-0 flex-1 bg-transparent text-[14px] text-mist outline-hidden placeholder:text-sage"
             />
           </label>
@@ -119,7 +119,7 @@ function Catalog() {
             <SheetTrigger asChild>
               <button
                 type="button"
-                aria-label="Filters"
+                aria-label={t("Filters", "ตัวกรอง")}
                 className="relative grid size-11 shrink-0 place-items-center rounded-2xl border border-line bg-moss text-mist hover:border-em/60"
               >
                 <SlidersHorizontal className="size-[18px]" />
@@ -132,28 +132,28 @@ function Catalog() {
             </SheetTrigger>
             <SheetContent side="bottom" className="rounded-t-[28px] border-line bg-moss text-mist">
               <SheetHeader>
-                <SheetTitle className="font-display text-[20px] font-medium text-mist">Filter species</SheetTitle>
+                <SheetTitle className="font-display text-[20px] font-medium text-mist">{t("Filter species", "กรองสายพันธุ์")}</SheetTitle>
               </SheetHeader>
               <div className="space-y-5 px-4 pb-6">
                 <FilterGroup
-                  title="Rarity"
-                  options={RARITIES.map((r) => ({ id: r, label: RARITY_LABEL[r] }))}
+                  title={t("Rarity", "ความหายาก")}
+                  options={RARITIES.map((r) => ({ id: r, label: rarityLabelL(r, lang) }))}
                   selected={rarity}
                   onToggle={(r) => setSearch({ rarity: toggle(rarity, r as Rarity) })}
                 />
                 <FilterGroup
-                  title="Care level"
-                  options={DIFFICULTIES.map((d) => ({ id: d, label: DIFFICULTY_LABEL[d] }))}
+                  title={t("Care level", "ระดับการเลี้ยง")}
+                  options={DIFFICULTIES.map((d) => ({ id: d, label: difficultyLabelL(d, lang) }))}
                   selected={level}
                   onToggle={(d) => setSearch({ level: toggle(level, d as Difficulty) })}
                 />
                 <div className="flex gap-2 pt-2">
                   <button type="button" className={btnSecondary} onClick={() => setSearch({ rarity: undefined, level: undefined })}>
-                    Clear
+                    {t("Clear", "ล้าง")}
                   </button>
                   <SheetTrigger asChild>
                     <button type="button" className={btnPrimary}>
-                      Show {results.length} species
+                      {t(`Show ${results.length} species`, `แสดง ${results.length} สายพันธุ์`)}
                     </button>
                   </SheetTrigger>
                 </div>
@@ -176,7 +176,7 @@ function Catalog() {
                   active ? "bg-em text-on-em" : "border border-line bg-moss text-mist hover:border-em/60",
                 )}
               >
-                {f.label} ({familyCount(SPECIES, f.id)})
+                {familyFilterLabelL(f.id, lang)} ({familyCount(SPECIES, f.id)})
               </button>
             );
           })}
@@ -187,16 +187,16 @@ function Catalog() {
             <PlaneIcon />
           </span>
           <span className="min-w-0">
-            <span className="font-display block text-[19px] leading-tight">Next Bangkok Cargo: {shortDate(flight.date)}</span>
-            <span className="block text-[13px] font-medium">{SPECIES.length} Captive-Bred Morphs Available</span>
+            <span className="font-display block text-[19px] leading-tight">{t("Next Bangkok Cargo", "เที่ยวบินขนส่งรอบถัดไป")}: {shortDateL(flight.date, lang)}</span>
+            <span className="block text-[13px] font-medium">{t(`${SPECIES.length} Captive-Bred Morphs Available`, `มีให้เลือก ${SPECIES.length} มอร์ฟ เพาะพันธุ์ในฟาร์ม`)}</span>
           </span>
         </Link>
 
         {results.length === 0 ? (
           <EmptyState
             icon={<SearchX className="size-6" />}
-            title="No morphs match"
-            body="Try another name or family, or clear your filters to see every species we export."
+            title={t("No morphs match", "ไม่พบมอร์ฟที่ตรงกัน")}
+            body={t("Try another name or family, or clear your filters to see every species we export.", "ลองค้นชื่อหรือวงศ์อื่น หรือล้างตัวกรองเพื่อดูทุกสายพันธุ์ที่เราส่งออก")}
             action={
               <button
                 type="button"
@@ -206,7 +206,7 @@ function Catalog() {
                   navigate({ to: ".", search: {}, replace: true });
                 }}
               >
-                Clear search & filters
+                {t("Clear search & filters", "ล้างการค้นหาและตัวกรอง")}
               </button>
             }
           />
@@ -221,12 +221,12 @@ function Catalog() {
                 >
                   <div className="relative">
                     <SpeciesPhoto slug={s.slug} alt={catalogName(s)} className="aspect-square rounded-[20px]" />
-                    <Badge className="absolute top-2 left-2 bg-peat/70 backdrop-blur-sm">{s.badge}</Badge>
+                    <Badge className="absolute top-2 left-2 bg-peat/70 backdrop-blur-sm">{badgeL(s.badge, lang)}</Badge>
                   </div>
                   <div className="flex flex-1 flex-col px-2 pt-3 pb-2">
                     <h3 className="text-[13px] leading-snug font-bold">{catalogName(s)}</h3>
                     <p className="mt-1 text-[11px] text-sage">{familyTag(s)}</p>
-                    <p className="font-display mt-auto pt-2 text-[19px] text-em">From {money(s.starterPrice, { whole: true })}</p>
+                    <p className="font-display mt-auto pt-2 text-[19px] text-em">{t("From", "เริ่ม")} {money(s.starterPrice, { whole: true })}</p>
                   </div>
                 </Link>
               </li>
@@ -239,8 +239,8 @@ function Catalog() {
             <QrCode className="size-6" />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="font-display block text-[19px]">Print Enclosure Tub Labels</span>
-            <span className="block text-[13px] text-sage">Generate printable cards with QR care sheets</span>
+            <span className="font-display block text-[19px]">{t("Print Enclosure Tub Labels", "พิมพ์ป้ายกล่องเลี้ยง")}</span>
+            <span className="block text-[13px] text-sage">{t("Generate printable cards with QR care sheets", "สร้างป้ายพร้อม QR โค้ดวิธีเลี้ยง")}</span>
           </span>
           <ChevronRight className="size-5 shrink-0 text-sage" />
         </Link>
