@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ChevronRight } from "lucide-react";
 import { getOrders } from "@/lib/orders.functions";
-import { orderStage, stageLabel } from "@/lib/order-status";
-import { shortDate } from "@/lib/shipping";
+import { orderStage } from "@/lib/order-status";
+import { shortDateL, stageLabelL, useI18n } from "@/lib/i18n";
 import { useNow, useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { AppHeader, Page, Screen, TabBar } from "@/components/tt/shell";
@@ -30,6 +30,7 @@ function Orders() {
   const { orderNumbers, hydrated } = useStore();
   const fetchOrders = useServerFn(getOrders);
   const now = useNow();
+  const { lang, t } = useI18n();
   const query = useQuery({
     queryKey: ["orders", orderNumbers],
     queryFn: () => fetchOrders({ data: { orderNumbers } }),
@@ -49,11 +50,11 @@ function Orders() {
     body = (
       <EmptyState
         icon={<OrdersTabIcon />}
-        title="Orders didn't load"
-        body={query.error instanceof Error ? query.error.message : "Something went wrong."}
+        title={t("Orders didn't load", "โหลดคำสั่งซื้อไม่สำเร็จ")}
+        body={query.error instanceof Error ? query.error.message : t("Something went wrong.", "เกิดข้อผิดพลาด")}
         action={
           <button type="button" className={btnSecondary} onClick={() => query.refetch()}>
-            Try again
+            {t("Try again", "ลองอีกครั้ง")}
           </button>
         }
       />
@@ -62,15 +63,15 @@ function Orders() {
     body = (
       <EmptyState
         icon={<OrdersTabIcon />}
-        title="No export orders yet"
-        body="Orders you place on this device show up here with their flight and delivery status. Ordered on another device? Track it with your order number."
+        title={t("No export orders yet", "ยังไม่มีคำสั่งซื้อ")}
+        body={t("Orders you place on this device show up here with their flight and delivery status. Ordered on another device? Track it with your order number.", "คำสั่งซื้อจากเครื่องนี้จะแสดงที่นี่ พร้อมสถานะเที่ยวบินและการจัดส่ง สั่งจากเครื่องอื่น? ติดตามด้วยหมายเลขคำสั่งซื้อได้เลย")}
         action={
           <div className="space-y-2">
             <Link to="/" className={btnPrimary}>
-              Browse species
+              {t("Browse species", "ดูสายพันธุ์")}
             </Link>
             <Link to="/transit" className={btnSecondary}>
-              Track an order
+              {t("Track an order", "ติดตามพัสดุ")}
             </Link>
           </div>
         }
@@ -99,15 +100,15 @@ function Orders() {
                         o.weatherHold && stage === 0 ? "bg-warn/10 text-warn" : "bg-em/10 text-em",
                       )}
                     >
-                      {stageLabel(stage, o.weatherHold)}
+                      {stageLabelL(stage, o.weatherHold, lang)}
                     </span>
                   </div>
                   <div className="truncate text-[15px] font-medium">
-                    {first ? `${first.count}x ${first.name}` : "Export order"}
-                    {o.items.length > 1 && ` +${o.items.length - 1} more`}
+                    {first ? `${first.count}x ${first.name}` : t("Export order", "คำสั่งซื้อส่งออก")}
+                    {o.items.length > 1 && t(` +${o.items.length - 1} more`, ` +อีก ${o.items.length - 1} รายการ`)}
                   </div>
                   <div className="text-[12px] text-sage">
-                    Flight {shortDate(o.flightDate)} · Door {shortDate(o.deliveryDate, true)}
+                    {t("Flight", "บิน")} {shortDateL(o.flightDate, lang)} · {t("Door", "ถึงบ้าน")} {shortDateL(o.deliveryDate, lang, true)}
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
@@ -124,7 +125,7 @@ function Orders() {
 
   return (
     <Screen>
-      <AppHeader title="My Orders" brand />
+      <AppHeader title={t("My Orders", "คำสั่งซื้อของฉัน")} brand />
       <Page className="space-y-4">{body}</Page>
       <TabBar />
     </Screen>

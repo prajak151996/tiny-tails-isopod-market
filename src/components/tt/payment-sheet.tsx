@@ -3,6 +3,7 @@ import { Loader2, Lock } from "lucide-react";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { btnPrimary, btnSecondary, inputBox } from "./kit";
+import { useI18n } from "@/lib/i18n";
 
 export type PaymentMethod = "card" | "apple_pay";
 
@@ -64,6 +65,7 @@ export function PaymentSheet({
   const [exp, setExp] = useState("");
   const [cvc, setCvc] = useState("");
   const [touched, setTouched] = useState(false);
+  const { t } = useI18n();
 
   const cardOk = luhnValid(card);
   const expOk = expiryValid(exp, new Date());
@@ -73,17 +75,17 @@ export function PaymentSheet({
     <Sheet open={open} onOpenChange={(o) => !pending && onOpenChange(o)}>
       <SheetContent side="bottom" className="mx-auto max-w-lg rounded-t-[28px] border-line bg-moss text-mist">
         <SheetHeader>
-          <SheetTitle className="font-display text-[20px] font-medium text-mist">Pay {amountLabel}</SheetTitle>
+          <SheetTitle className="font-display text-[20px] font-medium text-mist">{t(`Pay ${amountLabel}`, `ชำระ ${amountLabel}`)}</SheetTitle>
           <SheetDescription className="text-[12px] text-sage">
-            Test checkout: no real charge is made. Use card 4242 4242 4242 4242, any future date and any CVC.
+            {t("Test checkout: no real charge is made. Use card 4242 4242 4242 4242, any future date and any CVC.", "โหมดทดสอบ: ไม่มีการตัดเงินจริง ใช้บัตร 4242 4242 4242 4242 วันหมดอายุในอนาคต และ CVC ใดก็ได้")}
           </SheetDescription>
         </SheetHeader>
         <div className="space-y-3 px-4 pb-6">
           <button type="button" disabled={pending} onClick={() => onPay("apple_pay")} className={btnSecondary}>
-            Pay with Apple Pay
+            {t("Pay with Apple Pay", "ชำระด้วย Apple Pay")}
           </button>
           <div className="flex items-center gap-3 text-[11px] font-semibold tracking-wider text-sage uppercase">
-            <span className="h-px flex-1 bg-line" /> or pay by card <span className="h-px flex-1 bg-line" />
+            <span className="h-px flex-1 bg-line" /> {t("or pay by card", "หรือชำระด้วยบัตร")} <span className="h-px flex-1 bg-line" />
           </div>
           <form
             className="space-y-2"
@@ -96,8 +98,8 @@ export function PaymentSheet({
             <input
               inputMode="numeric"
               autoComplete="cc-number"
-              aria-label="Card number"
-              placeholder="Card number"
+              aria-label={t("Card number", "หมายเลขบัตร")}
+              placeholder={t("Card number", "หมายเลขบัตร")}
               value={card}
               onChange={(e) => setCard(formatCard(e.target.value))}
               className={cn(inputBox, touched && !cardOk && "border-warn/70")}
@@ -106,7 +108,7 @@ export function PaymentSheet({
               <input
                 inputMode="numeric"
                 autoComplete="cc-exp"
-                aria-label="Expiry date"
+                aria-label={t("Expiry date", "วันหมดอายุ")}
                 placeholder="MM / YY"
                 value={exp}
                 onChange={(e) => setExp(formatExpiry(e.target.value))}
@@ -115,7 +117,7 @@ export function PaymentSheet({
               <input
                 inputMode="numeric"
                 autoComplete="cc-csc"
-                aria-label="Security code"
+                aria-label={t("Security code", "รหัสความปลอดภัย")}
                 placeholder="CVC"
                 maxLength={4}
                 value={cvc}
@@ -124,7 +126,7 @@ export function PaymentSheet({
               />
             </div>
             {touched && !(cardOk && expOk && cvcOk) && (
-              <p className="text-[12px] text-warn">Check the card number, expiry date and security code.</p>
+              <p className="text-[12px] text-warn">{t("Check the card number, expiry date and security code.", "ตรวจสอบหมายเลขบัตร วันหมดอายุ และรหัสความปลอดภัย")}</p>
             )}
             {error && (
               <p role="alert" className="rounded-xl bg-destructive/10 px-3 py-2 text-[12px] text-destructive">
@@ -133,7 +135,7 @@ export function PaymentSheet({
             )}
             <button type="submit" disabled={pending} className={cn(btnPrimary, "mt-2")}>
               {pending ? <Loader2 className="size-4 animate-spin" /> : <Lock className="size-4" />}
-              {pending ? "Confirming your export slot…" : `Pay ${amountLabel}`}
+              {pending ? t("Confirming your export slot…", "กำลังยืนยันที่ในเที่ยวบิน…") : t(`Pay ${amountLabel}`, `ชำระ ${amountLabel}`)}
             </button>
           </form>
         </div>

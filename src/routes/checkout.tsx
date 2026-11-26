@@ -15,6 +15,7 @@ import { DestinationFields } from "@/components/tt/destination";
 import { TransitJourney } from "@/components/tt/transit-journey";
 import { PaymentSheet, type PaymentMethod } from "@/components/tt/payment-sheet";
 import { BagIcon } from "@/components/tt/icons";
+import { useI18n, zipLabelL } from "@/lib/i18n";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -34,12 +35,12 @@ export const Route = createFileRoute("/checkout")({
 type Contact = { customerName: string; email: string; phone: string; addressLine: string; city: string };
 const EMPTY_CONTACT: Contact = { customerName: "", email: "", phone: "", addressLine: "", city: "" };
 
-function contactErrors(c: Contact): Partial<Record<keyof Contact, string>> {
+function contactErrors(c: Contact, t: (en: string, th: string) => string): Partial<Record<keyof Contact, string>> {
   const e: Partial<Record<keyof Contact, string>> = {};
-  if (c.customerName.trim().length < 2) e.customerName = "Enter the recipient's full name";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email.trim())) e.email = "Enter a valid email for tracking updates";
-  if (c.addressLine.trim().length < 3) e.addressLine = "Enter the street address";
-  if (c.city.trim().length < 2) e.city = "Enter the city";
+  if (c.customerName.trim().length < 2) e.customerName = t("Enter the recipient's full name", "กรอกชื่อ-นามสกุลผู้รับ");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email.trim())) e.email = t("Enter a valid email for tracking updates", "กรอกอีเมลให้ถูกต้องเพื่อรับการแจ้งเตือนพัสดุ");
+  if (c.addressLine.trim().length < 3) e.addressLine = t("Enter the street address", "กรอกที่อยู่");
+  if (c.city.trim().length < 2) e.city = t("Enter the city", "กรอกเมือง");
   return e;
 }
 
@@ -47,6 +48,7 @@ function Checkout() {
   const store = useStore();
   const { cart, destination, currency, hydrated } = store;
   const money = useMoney();
+  const { lang, t } = useI18n();
   const now = useNow();
   const navigate = useNavigate();
   const place = useServerFn(placeOrder);
@@ -57,7 +59,7 @@ function Checkout() {
   const [payOpen, setPayOpen] = useState(false);
 
   const q = quote(cart, destination.country, destination.zip, now);
-  const errors = contactErrors(contact);
+  const errors = contactErrors(contact, t);
   const zipOk = isValidZip(destination.country, destination.zip);
   const safe = q.status === "safe";
 
@@ -85,12 +87,12 @@ function Checkout() {
   const startPayment = () => {
     setSubmitted(true);
     if (Object.keys(errors).length || !zipOk) {
-      toast.error("Add your delivery details before paying.");
+      toast.error(t("Add your delivery details before paying.", "กรอกข้อมูลจัดส่งก่อนชำระเงิน"));
       document.getElementById("delivery")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
     if (!agreed) {
-      toast.error("Please agree to the 2-Hour Unboxing Video policy.");
+      toast.error(t("Please agree to the 2-Hour Unboxing Video policy.", "กรุณายอมรับนโยบายวิดีโอแกะกล่องภายใน 2 ชั่วโมง"));
       document.getElementById("lag-agree")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
@@ -101,15 +103,15 @@ function Checkout() {
   if (hydrated && cart.length === 0) {
     return (
       <Screen>
-        <AppHeader title="Secure Export Checkout" back="/" />
+        <AppHeader title={t("Secure Export Checkout", "ชำระเงินส่งออกอย่างปลอดภัย")} back="/" />
         <Page>
           <EmptyState
             icon={<BagIcon width={24} height={24} />}
-            title="Your export crate is empty"
-            body="Pick a colony pack from the catalog to see its door-to-door landed cost and reserve a seat on the next Bangkok flight."
+            title={t("Your export crate is empty", "ตะกร้าส่งออกยังว่างอยู่")}
+            body={t("Pick a colony pack from the catalog to see its door-to-door landed cost and reserve a seat on the next Bangkok flight.", "เลือกแพ็กโคโลนีจากรายการเพื่อดูค่าใช้จ่ายถึงหน้าบ้าน และจองที่ในเที่ยวบินถัดไปจากกรุงเทพฯ")}
             action={
               <Link to="/" className={btnPrimary}>
-                Browse species
+                {t("Browse species", "ดูสายพันธุ์")}
               </Link>
             }
           />
@@ -133,7 +135,7 @@ function Checkout() {
 
   return (
     <Screen>
-      <AppHeader title="Secure Export Checkout" back="/" />
+      <AppHeader title={t("Secure Export Checkout", "ชำระเงินส่งออกอย่างปลอดภัย")} back="/" />
       <Page className="space-y-4 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start lg:gap-6 lg:space-y-0">
         <div className="space-y-4">
           {!hydrated ? (
@@ -148,11 +150,11 @@ function Checkout() {
                     <Link to="/species/$slug" params={{ slug: l.slug }} className="block text-[15px] leading-snug font-medium hover:text-em">
                       {getPack(l.pack).count}x {displayName(s)}
                     </Link>
-                    <div className="text-[13px] text-sage">Captive Bred • Thailand</div>
+                    <div className="text-[13px] text-sage">{t("Captive Bred • Thailand", "เพาะพันธุ์ในฟาร์ม • ประเทศไทย")}</div>
                     <div className="mt-1.5 flex items-center gap-2">
                       <button
                         type="button"
-                        aria-label={l.qty === 1 ? "Remove from crate" : "Decrease quantity"}
+                        aria-label={l.qty === 1 ? t("Remove from crate", "ลบออกจากตะกร้า") : t("Decrease quantity", "ลดจำนวน")}
                         onClick={() => store.setQty(l.slug, l.pack, l.qty - 1)}
                         className="grid size-7 place-items-center rounded-full border border-line bg-peat text-mist"
                       >
@@ -161,7 +163,7 @@ function Checkout() {
                       <span className="w-5 text-center text-[13px] font-semibold tabular-nums">{l.qty}</span>
                       <button
                         type="button"
-                        aria-label="Increase quantity"
+                        aria-label={t("Increase quantity", "เพิ่มจำนวน")}
                         onClick={() => store.setQty(l.slug, l.pack, l.qty + 1)}
                         className="grid size-7 place-items-center rounded-full border border-line bg-peat text-em"
                       >
@@ -191,7 +193,7 @@ function Checkout() {
                 <Thermometer className="size-5" />
               </span>
               <div className="min-w-0 flex-1">
-                <div className="text-[13px] text-sage">Destination Temp</div>
+                <div className="text-[13px] text-sage">{t("Destination Temp", "อุณหภูมิปลายทาง")}</div>
                 <div className="text-[17px] font-medium">{q.tempC}°C</div>
               </div>
               <span
@@ -200,12 +202,12 @@ function Checkout() {
                   safe ? "bg-em/10 text-em" : "bg-warn/10 text-warn",
                 )}
               >
-                {safe ? "Safe Range" : "Weather Hold"}
+                {safe ? t("Safe Range", "ช่วงปลอดภัย") : t("Weather Hold", "พักส่งเพราะอากาศ")}
               </span>
             </div>
             {!safe && (
               <p className="text-[12px] text-warn">
-                Outside the 10–32°C safe range. We'll hold your colony in Bangkok and ship it on the first flight with a safe forecast.
+                {t("Outside the 10–32°C safe range. We'll hold your colony in Bangkok and ship it on the first flight with a safe forecast.", "อยู่นอกช่วงปลอดภัย 10–32°C เราจะพักโคโลนีไว้ที่กรุงเทพฯ และส่งในเที่ยวบินแรกที่อากาศปลอดภัย")}
               </p>
             )}
             <div className="h-px bg-line" />
@@ -213,7 +215,7 @@ function Checkout() {
               <span className="grid size-12 shrink-0 place-items-center rounded-full bg-bark text-lime">
                 <Box className="size-5" />
               </span>
-              <span className="text-[14px]">Double-wall insulated box + UniHeat 72h pack</span>
+              <span className="text-[14px]">{t("Double-wall insulated box + UniHeat 72h pack", "กล่องฉนวนสองชั้น + แผ่นให้ความร้อน UniHeat 72 ชม.")}</span>
             </div>
           </Card>
         </div>
@@ -221,16 +223,16 @@ function Checkout() {
         <div className="space-y-4">
           <Card className="space-y-3" >
             <div id="delivery" className="scroll-mt-24" />
-            <SectionTitle>Delivery details</SectionTitle>
-            {field("customerName", "Full name", { autoComplete: "name", placeholder: "Jordan Rivera" })}
-            {field("email", "Email for tracking", { type: "email", autoComplete: "email", placeholder: "you@example.com" })}
-            {field("phone", "Phone (for FedEx)", { type: "tel", autoComplete: "tel", placeholder: "+1 310 555 0142" })}
-            {field("addressLine", "Street address", { autoComplete: "street-address", placeholder: "123 Palm Drive" })}
-            {field("city", "City", { autoComplete: "address-level2", placeholder: "Los Angeles" })}
+            <SectionTitle>{t("Delivery details", "ข้อมูลจัดส่ง")}</SectionTitle>
+            {field("customerName", t("Full name", "ชื่อ-นามสกุล"), { autoComplete: "name", placeholder: "Jordan Rivera" })}
+            {field("email", t("Email for tracking", "อีเมลสำหรับติดตามพัสดุ"), { type: "email", autoComplete: "email", placeholder: "you@example.com" })}
+            {field("phone", t("Phone (for FedEx)", "เบอร์โทร (สำหรับ FedEx)"), { type: "tel", autoComplete: "tel", placeholder: "+1 310 555 0142" })}
+            {field("addressLine", t("Street address", "ที่อยู่"), { autoComplete: "street-address", placeholder: "123 Palm Drive" })}
+            {field("city", t("City", "เมือง"), { autoComplete: "address-level2", placeholder: "Los Angeles" })}
             <div>
-              <span className="mb-1 block text-[12px] text-sage">Country & {q.country.zipLabel.toLowerCase()}</span>
+              <span className="mb-1 block text-[12px] text-sage">{t(`Country & ${q.country.zipLabel.toLowerCase()}`, `ประเทศและ${zipLabelL(q.country, lang)}`)}</span>
               <DestinationFields />
-              {!zipOk && <span className="mt-1 block text-[11px] text-warn">Enter a valid {q.country.zipLabel.toLowerCase()}</span>}
+              {!zipOk && <span className="mt-1 block text-[11px] text-warn">{t(`Enter a valid ${q.country.zipLabel.toLowerCase()}`, `กรอก${zipLabelL(q.country, lang)}ให้ถูกต้อง`)}</span>}
             </div>
           </Card>
 
@@ -238,9 +240,9 @@ function Checkout() {
             <dl className="divide-y divide-line text-[14px]">
               {(
                 [
-                  ["Items Subtotal", q.itemsUsd],
-                  ["Air Freight & Transshipper Clearance", q.airFreightUsd],
-                  ["FedEx Priority Overnight Door Delivery", q.domesticUsd],
+                  [t("Items Subtotal", "ค่าสินค้า"), q.itemsUsd],
+                  [t("Air Freight & Transshipper Clearance", "ค่าขนส่งทางอากาศและผ่านพิธีการ"), q.airFreightUsd],
+                  [t("FedEx Priority Overnight Door Delivery", "FedEx Priority Overnight ส่งถึงบ้าน"), q.domesticUsd],
                 ] as const
               ).map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-4 py-2.5">
@@ -249,7 +251,7 @@ function Checkout() {
                 </div>
               ))}
               <div className="flex items-baseline justify-between gap-4 pt-3">
-                <dt className="font-bold">Total Landed Amount</dt>
+                <dt className="font-bold">{t("Total Landed Amount", "ยอดรวมถึงหน้าบ้าน")}</dt>
                 <dd className="shrink-0">
                   <span className="font-display text-[26px] text-em tabular-nums">{money(q.totalUsd)}</span>{" "}
                   <span className="text-[12px] text-sage">{currency}</span>
@@ -257,8 +259,8 @@ function Checkout() {
               </div>
             </dl>
             <p className="mt-2 text-[11px] text-sage">
-              Excludes any import duty or VAT your country may charge on arrival.
-              {currency !== "USD" && " Charged in USD; the amount shown is an estimate in your currency."}
+              {t("Excludes any import duty or VAT your country may charge on arrival.", "ไม่รวมภาษีนำเข้าหรือ VAT ที่ประเทศปลายทางอาจเรียกเก็บ")}
+              {currency !== "USD" && t(" Charged in USD; the amount shown is an estimate in your currency.", " เรียกเก็บเป็น USD ยอดที่แสดงเป็นค่าประมาณในสกุลเงินของคุณ")}
             </p>
           </Card>
 
@@ -280,7 +282,7 @@ function Checkout() {
               {agreed && <Check className="size-4" strokeWidth={3} />}
             </span>
             <span className="text-[14px]">
-              I understand and agree to the 2-Hour Unboxing Video policy for 100% Live Arrival Guarantee (LAG)
+              {t("I understand and agree to the 2-Hour Unboxing Video policy for 100% Live Arrival Guarantee (LAG)", "ฉันเข้าใจและยอมรับนโยบายวิดีโอแกะกล่องภายใน 2 ชั่วโมง สำหรับการรับประกันถึงมือแบบมีชีวิต 100% (LAG)")}
             </span>
           </label>
         </div>
@@ -290,9 +292,9 @@ function Checkout() {
         <div className="lg:ml-auto lg:max-w-[calc(50%-12px)]">
           <button type="button" onClick={startPayment} disabled={!hydrated || q.lines.length === 0} className={btnPrimary}>
             <Lock className="size-4" />
-            Pay {money(q.totalUsd)} with Card / Apple Pay
+            {t(`Pay ${money(q.totalUsd)} with Card / Apple Pay`, `ชำระ ${money(q.totalUsd)} ด้วยบัตร / Apple Pay`)}
           </button>
-          <p className="mt-2 text-center text-[12px] text-sage">Powered by Stripe • Live Arrival Protection Included</p>
+          <p className="mt-2 text-center text-[12px] text-sage">{t("Powered by Stripe • Live Arrival Protection Included", "ชำระผ่าน Stripe • รวมการรับประกันถึงมือแบบมีชีวิต")}</p>
         </div>
       </DockBar>
 
@@ -301,7 +303,7 @@ function Checkout() {
         onOpenChange={setPayOpen}
         amountLabel={money(q.totalUsd)}
         pending={mutation.isPending}
-        error={mutation.error ? (mutation.error instanceof Error ? mutation.error.message : "Payment failed. Please try again.") : null}
+        error={mutation.error ? (mutation.error instanceof Error ? mutation.error.message : t("Payment failed. Please try again.", "ชำระเงินไม่สำเร็จ กรุณาลองใหม่")) : null}
         onPay={(m) => mutation.mutate(m)}
       />
     </Screen>

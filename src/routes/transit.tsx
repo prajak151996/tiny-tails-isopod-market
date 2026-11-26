@@ -4,7 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Search } from "lucide-react";
 import { useState } from "react";
 import { findOrder } from "@/lib/orders.functions";
-import { getCountry, isValidZip, orderWithinText, quote, shortDate, upcomingFlights } from "@/lib/shipping";
+import { getCountry, isValidZip, quote, upcomingFlights } from "@/lib/shipping";
+import { countryNameL, orderWithinTextL, shortDateL, useI18n, zipLabelL } from "@/lib/i18n";
 import { useNow, useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { AppHeader, Page, Screen, TabBar } from "@/components/tt/shell";
@@ -32,14 +33,15 @@ function pad(n: number) {
 
 function Transit() {
   const now = useNow(1000);
+  const { lang, t } = useI18n();
   const flights = upcomingFlights(now, 4);
   const next = flights[0]!;
   const left = Math.max(0, next.cutoff - now);
   const parts = [
-    [Math.floor(left / 86_400_000), "Days"],
-    [Math.floor(left / 3_600_000) % 24, "Hrs"],
-    [Math.floor(left / 60_000) % 60, "Min"],
-    [Math.floor(left / 1000) % 60, "Sec"],
+    [Math.floor(left / 86_400_000), t("Days", "วัน")],
+    [Math.floor(left / 3_600_000) % 24, t("Hrs", "ชม.")],
+    [Math.floor(left / 60_000) % 60, t("Min", "นาที")],
+    [Math.floor(left / 1000) % 60, t("Sec", "วิ")],
   ] as const;
 
   const { destination } = useStore();
@@ -60,7 +62,7 @@ function Transit() {
 
   return (
     <Screen>
-      <AppHeader title="Export Flights" brand />
+      <AppHeader title={t("Export Flights", "เที่ยวบินส่งออก")} brand />
       <Page className="space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
         <div className="space-y-4">
           <section className="space-y-4 rounded-[24px] bg-sunset p-5 text-on-em shadow-glow-faint">
@@ -69,11 +71,11 @@ function Transit() {
                 <PlaneIcon />
               </span>
               <div>
-                <div className="text-[12px] font-bold tracking-wider uppercase">Batch {next.batch}</div>
-                <div className="font-display text-[22px] leading-tight">Next Bangkok Cargo: {shortDate(next.date)}</div>
+                <div className="text-[12px] font-bold tracking-wider uppercase">{t("Batch", "รอบ")} {next.batch}</div>
+                <div className="font-display text-[22px] leading-tight">{t("Next Bangkok Cargo", "เที่ยวบินขนส่งรอบถัดไป")}: {shortDateL(next.date, lang)}</div>
               </div>
             </div>
-            <div className="grid grid-cols-4 gap-2" aria-label="Time left to order">
+            <div className="grid grid-cols-4 gap-2" aria-label={t("Time left to order", "เวลาที่เหลือในการสั่ง")}>
               {parts.map(([v, l]) => (
                 <div key={l} className="rounded-2xl bg-peat/90 py-2 text-center text-mist">
                   <div className="text-[22px] font-bold tabular-nums" suppressHydrationWarning>
@@ -84,24 +86,24 @@ function Transit() {
               ))}
             </div>
             <p className="text-[13px] font-medium">
-              Order cutoff {shortDate(new Date(next.cutoff + 7 * 3_600_000).toISOString().slice(0, 10))}, 23:59 Bangkok time ·{" "}
-              {orderWithinText(next, now)}
+              {t("Order cutoff", "ปิดรับออร์เดอร์")} {shortDateL(new Date(next.cutoff + 7 * 3_600_000).toISOString().slice(0, 10), lang)}, {t("23:59 Bangkok time", "23:59 น. เวลาไทย")} ·{" "}
+              {orderWithinTextL(next, now, lang)}
             </p>
             <Link to="/" className="inline-flex h-12 w-full items-center justify-center rounded-full bg-peat text-[14px] font-bold text-em">
-              Pre-Order for Next Batch
+              {t("Pre-Order for Next Batch", "สั่งจองรอบถัดไป")}
             </Link>
           </section>
 
           <Card className="space-y-3">
-            <SectionTitle>Upcoming export flights</SectionTitle>
+            <SectionTitle>{t("Upcoming export flights", "เที่ยวบินส่งออกที่จะถึง")}</SectionTitle>
             <ul className="divide-y divide-line text-[14px]">
               {flights.map((f, i) => (
                 <li key={f.date} className="flex items-center justify-between gap-3 py-2.5">
                   <div>
                     <div className="font-semibold">
-                      {shortDate(f.date)} <span className="text-[12px] font-normal text-sage">· {f.batch}</span>
+                      {shortDateL(f.date, lang)} <span className="text-[12px] font-normal text-sage">· {f.batch}</span>
                     </div>
-                    <div className="text-[12px] text-sage">Door delivery {shortDate(f.deliveryDate, true)}</div>
+                    <div className="text-[12px] text-sage">{t("Door delivery", "ส่งถึงบ้าน")} {shortDateL(f.deliveryDate, lang, true)}</div>
                   </div>
                   <span
                     className={cn(
@@ -109,7 +111,7 @@ function Transit() {
                       i === 0 ? "bg-em/10 text-em" : "bg-bark text-sage",
                     )}
                   >
-                    {i === 0 ? "Booking now" : "Open"}
+                    {i === 0 ? t("Booking now", "กำลังเปิดจอง") : t("Open", "เปิดรับ")}
                   </span>
                 </li>
               ))}
@@ -119,7 +121,7 @@ function Transit() {
 
         <div className="space-y-4">
           <Card className="space-y-3">
-            <SectionTitle>Track an order</SectionTitle>
+            <SectionTitle>{t("Track an order", "ติดตามพัสดุ")}</SectionTitle>
             <form
               className="flex gap-2"
               onSubmit={(e) => {
@@ -133,13 +135,13 @@ function Transit() {
                   setCode(e.target.value);
                   lookup.reset();
                 }}
-                placeholder="Order or tracking number"
-                aria-label="Order or tracking number"
+                placeholder={t("Order or tracking number", "หมายเลขคำสั่งซื้อหรือพัสดุ")}
+                aria-label={t("Order or tracking number", "หมายเลขคำสั่งซื้อหรือพัสดุ")}
                 className={inputBox}
               />
               <button
                 type="submit"
-                aria-label="Track"
+                aria-label={t("Track", "ติดตาม")}
                 disabled={!codeOk || lookup.isPending}
                 className="grid size-11 shrink-0 place-items-center rounded-full bg-em text-on-em shadow-glow disabled:opacity-50"
               >
@@ -147,26 +149,26 @@ function Transit() {
               </button>
             </form>
             {lookup.isSuccess && !lookup.data && (
-              <p className="text-[12px] text-warn">No order matches {cleaned}. Check your confirmation email for the number.</p>
+              <p className="text-[12px] text-warn">{t(`No order matches ${cleaned}. Check your confirmation email for the number.`, `ไม่พบคำสั่งซื้อ ${cleaned} ตรวจสอบหมายเลขในอีเมลยืนยัน`)}</p>
             )}
-            {lookup.isError && <p className="text-[12px] text-destructive">Tracking is unavailable right now. Try again shortly.</p>}
+            {lookup.isError && <p className="text-[12px] text-destructive">{t("Tracking is unavailable right now. Try again shortly.", "ระบบติดตามพัสดุยังไม่พร้อม ลองใหม่อีกครั้ง")}</p>}
           </Card>
 
           <Card className="space-y-3">
-            <SectionTitle>Destination weather check</SectionTitle>
+            <SectionTitle>{t("Destination weather check", "เช็กสภาพอากาศปลายทาง")}</SectionTitle>
             <p className="text-[13px] text-sage">
-              We only fly when your forecast sits between 10°C and 32°C. Check {getCountry(destination.country).name} before you order.
+              {t(`We only fly when your forecast sits between 10°C and 32°C. Check ${getCountry(destination.country).name} before you order.`, `เราส่งเฉพาะเมื่ออากาศปลายทางอยู่ระหว่าง 10°C ถึง 32°C เช็ก${countryNameL(getCountry(destination.country), lang)}ก่อนสั่งซื้อ`)}
             </p>
             <DestinationFields />
             {zipOk ? (
               <WeatherStatusLine status={q.status} tempC={q.tempC} />
             ) : (
-              <p className="rounded-xl bg-warn/10 px-3 py-2 text-[12px] text-warn">Enter a valid {q.country.zipLabel.toLowerCase()} to check.</p>
+              <p className="rounded-xl bg-warn/10 px-3 py-2 text-[12px] text-warn">{t(`Enter a valid ${q.country.zipLabel.toLowerCase()} to check.`, `กรอก${zipLabelL(q.country, lang)}ให้ถูกต้องเพื่อเช็ก`)}</p>
             )}
           </Card>
 
           <Link to="/orders" className={btnPrimary}>
-            View my orders
+            {t("View my orders", "ดูคำสั่งซื้อของฉัน")}
           </Link>
         </div>
       </Page>
